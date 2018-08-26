@@ -74,5 +74,5 @@ while True:
 		print("no new tweets, not posting right now.") #print failure message
 	#print wait message
 	print "{} - sleeping for ten minutes".format(datetime.datetime.now())
-	time.sleep(600000) #wait ten minutes
+	time.sleep(600) #wait ten minutes
 
