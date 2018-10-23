@@ -2,3 +2,5 @@
 *.pyc
 
 tw_keys.py
+tw_keys.py
+.coverage
