@@ -3,7 +3,6 @@
 import datetime
 import time
 import tweepy
-from collections import Counter
 from tw_keys import *
 
 # variables setups
@@ -20,13 +19,9 @@ def twitterSetup():
 	tw_auth=tweepy.OAuthHandler(TW_CONSUMER_KEY, TW_CONSUMER_SECRET)
 	tw_auth.set_access_token(TW_ACCESS_TOKEN, TW_ACCESS_SECRET)
 	tw_api=tweepy.API(tw_auth)
-	return tw_auth, tw_api
+	return tw_api
 
-def initTwitter():
-	tw_auth, tw_api = twitterSetup()
-	return 1
-
-tw_auth, tw_api = twitterSetup()
+tw_api = twitterSetup()
 
 # functions
 def get_syllables_phrase(phrase):
@@ -38,7 +33,22 @@ def get_syllables_phrase(phrase):
 		syllables += syllable_count(word)
 	return syllables
 
+def ignore(word):
+	#if true, the word is ignored and not counted
+	#ignore words that start with @ and #
+	if word[0] in '@#':
+		return True
+	#ignore words in all Caps that are more than 1, and less than 5 letters long
+	if len(word) < 5 and len(word) > 1 and (word == word.upper()):
+		return True
+	if not word.isalpha():
+		return True
+	else:
+		return False
+
 def syllable_count(word): #count the number of syllables per word
+	if ignore(word):
+		return 0
 	word = word.lower() #lowercase everthing
 	syllable_count = 0 #track syllable count
 	vowels = "aeiouy" # we're using vowels to detirmine syllables
@@ -56,16 +66,31 @@ def syllable_count(word): #count the number of syllables per word
 
 def word_count(phrase): #count the number of words
 	#return the number of words separated by whitespace
-	return len(Counter(phrase.split())) #return the number of words separated by whitespace
+	counter = 0
+	# split phrase into separate words
+	words = phrase.split(' ')
+	for word in words:
+		#only count the word if it's on the ignore list
+		if not ignore(word):
+			counter += 1
+	#return the number of words separated by whitespace
+	return counter
 
-def get_syllables_per_word(at_user): #get the syllables to word ratio
-	user = tw_api.get_user(at_user) #get the selected user with the api
-	status=user.timeline()[0] #get the most recent tweet
-	tweet = status.text.encode('ascii', 'ignore') #get text the the tweet
+#get the syllables to word ratio
+def get_syllables_per_word(at_user):
+	#get the selected user with the api
+	user = tw_api.get_user(at_user)
+	#get the most recent tweet
+	status=user.timeline()[0]
+	#get text the the tweet
+	tweet = status.text.encode('ascii', 'ignore')
 
-	s_count=get_syllables_phrase(tweet) #get syllable count
-	w_count=word_count(str(tweet)) #get word count
-	ratio = (float(s_count)/float(w_count)) #get the ratio
+	#get syllable count
+	s_count=get_syllables_phrase(tweet)
+	#get word count
+	w_count=word_count(str(tweet))
+	#get the ratio
+	ratio = (float(s_count)/float(w_count))
 
 	#return the formatted text
 	return """This tweet from @{} has a {} syllable to word ratio. 
@@ -75,25 +100,30 @@ def get_syllables_per_word(at_user): #get the syllables to word ratio
 			user.id,
 			status.id
 			)
-
-at_user = 'realdonaldtrump' #change this to target user
+#change this to target user
+tracked_users = ['neiltyson','realdonaldtrump']
+print 'boot sequence complete'
 
 #loop forever - check for new tweets, then wait 10 minutes
 if __name__ == '__main__':
 	#print initializtion sequence
-	print(
-		"boot sequence complete. Checking for tweets from @{}".format(
-			at_user))
 	while True:
-		try:
-			new_tweet = get_syllables_per_word(at_user) #generate ratio tweet text
-			#send the tweet - will throw exception if it's already been sent
-			tw_api.update_status(new_tweet) 
-			#print a sucess message
-			print("Sending the following tweet:")
-			print(new_tweet)
-		except tweepy.error.TweepError: #non unique text error
-			print("no new tweets, not posting right now.") #print failure message
-		#print wait message
-		print "{} - sleeping for ten minutes".format(datetime.datetime.now())
-		time.sleep(600) #wait ten minutes
+		for user in tracked_users:
+			print(
+				"Checking for tweets from @{}".format(user))
+			try:
+				#generate ratio tweet text
+				new_tweet = get_syllables_per_word(user) 
+				#send the tweet - will throw exception if it's already been sent
+				tw_api.update_status(new_tweet) 
+				#print a sucess message
+				print("Sending the following tweet:")
+				print(new_tweet)
+			#non unique text error
+			except tweepy.error.TweepError: 
+				#print failure message
+				print("no new tweets, not posting right now.") 
+			#print wait message
+			print "{} - sleeping for ten minutes".format(datetime.datetime.now())
+		#wait ten minutes
+		time.sleep(600) 
