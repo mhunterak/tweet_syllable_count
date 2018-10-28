@@ -29,7 +29,7 @@ def twitterSetup():
 
 # functions
 def get_syllables_phrase(phrase):
-    #split phrase into words
+    # split phrase into words
     words = phrase.split(' ')
     # init counter
     syllables = 0
@@ -85,7 +85,7 @@ def syllable_count(word):
             syllable_count += 1
             # if the word ends with "e"
             if word.endswith("e"):
-                #deincrement syllable_count
+                # deincrement syllable_count
                 syllable_count -= 1
     # if it's a word that doesn't have a syllable yet,
     if syllable_count == 0:
@@ -126,7 +126,7 @@ def get_syllables_per_word(at_user):
     ratio = (float(s_count)/float(w_count))
 
     # return the formatted text
-    return """This tweet from @{} has a {} syllable to word ratio. 
+    return """This tweet from @{} has a {} syllable to word ratio.
         https://twitter.com/{}/status/{}""".format(
             at_user,
             "{0:.2f}".format(ratio),
@@ -149,8 +149,27 @@ if __name__ == '__main__':
     while True:
         for user in tracked_users:
             print("Checking for tweets from @{}".format(user))
-            # generate ratio tweet text
-            newTweet = get_syllables_per_word(user)
+            # continue only if the tweet is loaded successfully
+            cont = False
+            # init Fibonacci numbers
+            fibo = [0, 1]
+            while cont is False:
+                try:
+                    # generate ratio tweet text
+                    newTweet = get_syllables_per_word(user)
+                    # if the tweet is loaded successfully, continue
+                    cont = True
+                # if an error occurs
+                except tweepy.error.TweepError:
+                    print ("sleeping for {} seconds".format(sum(fibo)))
+                    # sleep for the Fibonacci number in seconds
+                    time.sleep(sum(fibo))
+                    # next Fibonacci number is the sum of the last two numbers
+                    nextInt = sum(fibo)
+                    # move 2nd number to the first number
+                    fibo[0] = fibo[1]
+                    # set 2ne number as the sum of the last two
+                    fibo[1] = nextInt
             # send the tweet if it's not in the timeline
             duplicate = False
             myTwitter = tw_api.get_user('SyllableCounter')
@@ -165,11 +184,11 @@ if __name__ == '__main__':
             # if it's not marked as a duplicate
             if not duplicate:
                 # send the tweet
-                tw_api.update_status(newTweet) 
+                tw_api.update_status(newTweet)
                 # print a sucess message
                 print("Sending the following tweet:")
                 print(newTweet)
         # print wait message
         print "{} - sleeping for ten minutes".format(datetime.datetime.now())
         # wait ten minutes
-        time.sleep(600) 
+        time.sleep(600)
