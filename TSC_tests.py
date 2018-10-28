@@ -29,7 +29,8 @@ class TestFunctions(unittest.TestCase):
         # test syllable counter function
         self.assertEqual(tweet_syllable_count.syllable_count('K'), 1)
         self.assertEqual(tweet_syllable_count.syllable_count('Hello World'), 3)
-        self.assertEqual(tweet_syllable_count.syllable_count('The Ball is Red'), 4)
+        self.assertEqual(tweet_syllable_count.syllable_count(
+            'The Ball is Red'), 4)
         self.assertEqual(tweet_syllable_count.syllable_count(' '), 0)
         self.assertEqual(tweet_syllable_count.syllable_count(':'), 0)
         self.assertEqual(tweet_syllable_count.syllable_count('a'), 1)
@@ -65,8 +66,7 @@ class TestLiveFunctions(unittest.TestCase):
     def test_cloudhouseTweet(self):
         self.assertEqual(
             tweet_syllable_count.get_syllables_per_word('tehclubhouse').split(
-                    'syllable')[0],
-                'This tweet from @tehclubhouse has a 1.00 ')
+                'syllable')[0], 'This tweet from @tehclubhouse has a 1.00 ')
 
 
 if __name__ == '__main__':
