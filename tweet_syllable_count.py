@@ -34,7 +34,12 @@ def get_syllables_phrase(phrase):
     # init counter
     syllables = 0
     for word in words:
-        syllables += syllable_count(word)
+        # get syllables for each word
+        syllable = syllable_count(word)
+        # print to console (for debugging)
+        print "'{}' has {} syllables".format(word, syllable)
+        # add to the count for the phrase
+        syllables += syllable
     return syllables
 
 
@@ -45,6 +50,8 @@ def sanitize(word):
 def ignore(word):
     # if true, the word is ignored and not counted
     # ignore words that start with @ and #
+    if not len(word):
+        return True
     if word[0] in '@#':
         return True
     # ignore words in all Caps that are more than 1, and less than 5 letters
@@ -136,7 +143,12 @@ def get_syllables_per_word(at_user):
 
 
 # change this to target user
-tracked_users = ['neiltyson', 'realdonaldtrump']
+tracked_users = [
+    'neiltyson',
+    'realdonaldtrump',
+    'BillNye',
+    'RonWyden',
+    ]
 print 'boot sequence complete'
 
 
