@@ -34,6 +34,9 @@ def get_syllables_phrase(phrase):
     # init counter
     syllables = 0
     for word in words:
+        # check ignore list
+        if ignore(word):
+            continue
         # get syllables for each word
         syllable = syllable_count(word)
         # print to console (for debugging)
@@ -44,7 +47,7 @@ def get_syllables_phrase(phrase):
 
 
 def sanitize(word):
-    return re.sub("""[-'".,!?]""", '', word)
+    return re.sub("""[-:'".,!?]""", '', word)
 
 
 def ignore(word):
@@ -56,6 +59,9 @@ def ignore(word):
         return True
     # ignore words in all Caps that are more than 1, and less than 5 letters
     if len(word) < 5 and len(word) > 1 and (word == word.upper()):
+        return True
+    # ignore links (have http:// or https:// in the name)
+    if 'http://' in word or 'https://' in word:
         return True
     # remove all characters that are allowed in some words (like hyphens)
     word = sanitize(word)
