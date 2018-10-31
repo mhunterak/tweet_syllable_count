@@ -39,8 +39,6 @@ def get_syllables_phrase(phrase):
             continue
         # get syllables for each word
         syllable = syllable_count(word)
-        # print to console (for debugging)
-        print "'{}' has {} syllables".format(word, syllable)
         # add to the count for the phrase
         syllables += syllable
     return syllables
@@ -66,9 +64,12 @@ def ignore(word):
     # remove all characters that are allowed in some words (like hyphens)
     word = sanitize(word)
     if not word.isalpha():
-        if ''.join(list(word).pop(-1)).isalpha():
-            return False
-        else:
+        try:
+            if ''.join(list(word).pop(-1)).isalpha():
+                return False
+            else:
+                return True
+        except IndexError:
             return True
     else:
         return False
@@ -96,10 +97,10 @@ def syllable_count(word):
         if (word[index] in vowels) and (word[index - 1] not in vowels):
             # increment syllable_count
             syllable_count += 1
-            # if the word ends with "e"
-            if word.endswith("e"):
-                # deincrement syllable_count
-                syllable_count -= 1
+    # if the word ends with "e"
+    if word.endswith("e"):
+        # deincrement syllable_count
+        syllable_count -= 1
     # if it's a word that doesn't have a syllable yet,
     if syllable_count == 0:
         # increment syllable_count
@@ -116,8 +117,9 @@ def word_count(phrase):
     words = phrase.split(' ')
     for word in words:
         # only count the word if it's on the ignore list
-        if not ignore(word):
-            counter += 1
+        if len(word):
+            if not ignore(word):
+                counter += 1
     # return the number of words separated by whitespace
     return counter
 

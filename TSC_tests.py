@@ -24,6 +24,10 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(tweet_syllable_count.word_count('American'), 1)
         self.assertEqual(tweet_syllable_count.word_count(
             'super-volcano'), 1)
+        self.assertEqual(tweet_syllable_count.word_count(
+            'smash-and-grab'), 1)
+        self.assertEqual(tweet_syllable_count.word_count(
+            'smash and grab'), 3)
 
     def test_SyllableCount(self):
         # test syllable counter function
@@ -46,8 +50,13 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(tweet_syllable_count.syllable_count('"Mother'), 2)
         self.assertEqual(tweet_syllable_count.syllable_count('squishy'), 2)
         self.assertEqual(tweet_syllable_count.syllable_count('American'), 4)
+        self.assertEqual(tweet_syllable_count.syllable_count('college'), 2)
         self.assertEqual(tweet_syllable_count.syllable_count(
             'super-volcano'), 5)
+        self.assertEqual(tweet_syllable_count.syllable_count(
+            'smash-and-grab'), 3)
+        self.assertEqual(tweet_syllable_count.syllable_count(
+            'smash and grab'), 3)
 
     def test_Gettysburg(self):
         self.assertEqual(tweet_syllable_count.syllable_count('four'), 1)
@@ -66,7 +75,7 @@ class TestLiveFunctions(unittest.TestCase):
     def test_cloudhouseTweet(self):
         self.assertEqual(
             tweet_syllable_count.get_syllables_per_word('tehclubhouse').split(
-                'syllable')[0], 'This tweet from @tehclubhouse has a 1.00 ')
+                'syllable')[0], 'This tweet from @tehclubhouse has a 1.29 ')
 
 
 if __name__ == '__main__':
