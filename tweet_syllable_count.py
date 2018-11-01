@@ -8,7 +8,7 @@ import tweepy
 import tw_keys
 
 # variables setups
-# inaert twitter API keys here, or use tw_keys
+# insert twitter API keys here, or use tw_keys
 '''
 TW_CONSUMER_KEY=    ''
 TW_CONSUMER_SECRET=    ''
@@ -19,11 +19,15 @@ TW_ACCESS_SECRET=    ''
 
 # twitter API setup
 def twitterSetup():
+    # set consumer keys
     tw_auth = tweepy.OAuthHandler(
         tw_keys.TW_CONSUMER_KEY, tw_keys.TW_CONSUMER_SECRET)
+    # set access tokens
     tw_auth.set_access_token(
         tw_keys.TW_ACCESS_TOKEN, tw_keys.TW_ACCESS_SECRET)
+    # build API object
     tw_api = tweepy.API(tw_auth)
+    # return API object
     return tw_api
 
 
@@ -45,6 +49,7 @@ def get_syllables_phrase(phrase):
 
 
 def sanitize(word):
+    # remove characters that would cause problems with the other functions
     return re.sub("""[-:'".,!?]""", '', word)
 
 
@@ -63,14 +68,18 @@ def ignore(word):
         return True
     # remove all characters that are allowed in some words (like hyphens)
     word = sanitize(word)
+    # ignore words that have numbers or special characters
     if not word.isalpha():
         try:
+            # remove the last character and test again
             if ''.join(list(word).pop(-1)).isalpha():
                 return False
             else:
                 return True
+        # if an Index Error occurs, ignore the word
         except IndexError:
             return True
+    # if the word passes all the tests, it is not ignored
     else:
         return False
 
@@ -150,7 +159,7 @@ def get_syllables_per_word(at_user):
             )
 
 
-# change this to target user
+# targeted users
 tracked_users = [
     'neiltyson',
     'realdonaldtrump',
@@ -159,7 +168,7 @@ tracked_users = [
     ]
 print 'boot sequence complete'
 
-
+# build the API object
 tw_api = twitterSetup()
 
 
