@@ -70,6 +70,14 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(tweet_syllable_count.get_syllables_phrase(
             'four score, seven years ago'), 7)
 
+    def test_sanitize(self):
+        self.assertEqual(tweet_syllable_count.sanitize(
+            'ab-so-lutely'), 'absolutely')
+
+    def test_ignore(self):
+        self.assertTrue(tweet_syllable_count.ignore('#MAGA'))
+        self.assertFalse(tweet_syllable_count.ignore('Sad'))
+
 
 class TestLiveFunctions(unittest.TestCase):
     def test_cloudhouseTweet(self):
