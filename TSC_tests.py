@@ -2,7 +2,7 @@ import unittest
 import tweet_syllable_count
 
 
-class TestFunctions(unittest.TestCase):
+class test_WordCount(unittest.TestCase):
     def test_WordCount(self):
         # test Word Count function
         self.assertEqual(tweet_syllable_count.word_count('K'), 1)
@@ -14,6 +14,8 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(tweet_syllable_count.word_count('Be'), 1)
         self.assertEqual(tweet_syllable_count.word_count('bad'), 1)
         self.assertEqual(tweet_syllable_count.word_count('sad'), 1)
+
+    def test_peculiarWords(self):
         self.assertEqual(tweet_syllable_count.word_count("they're"), 1)
         self.assertEqual(tweet_syllable_count.word_count('GOP'), 0)
         self.assertEqual(tweet_syllable_count.word_count('#MAGA'), 0)
