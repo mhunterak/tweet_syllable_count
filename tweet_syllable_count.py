@@ -147,7 +147,10 @@ def get_syllables_per_word(at_user):
     # get word count
     w_count = word_count(str(tweet))
     # get the ratio
-    ratio = (float(s_count)/float(w_count))
+    try:
+        ratio = (float(s_count)/float(w_count))
+    except ZeroDivisionError:
+        ratio = 0.00
 
     # return the formatted text
     return """This tweet from @{} has a {} syllable to word ratio.
