@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # imports
 import datetime
+import os
 import re
 import time
 import tweepy
@@ -150,6 +151,7 @@ def get_syllables_per_word(at_user):
     try:
         ratio = (float(s_count)/float(w_count))
     except ZeroDivisionError:
+        # if the word count is 0, return 0.00 to avoid divide by zero error
         ratio = 0.00
 
     # return the formatted text
@@ -169,9 +171,12 @@ tracked_users = [
     'BillNye',
     'RonWyden',
     ]
+# clear the console screen
+os.system('clear')
+# print boot success message
 print 'boot sequence complete'
 
-# build the API object
+# build the Twitter API object
 tw_api = twitterSetup()
 
 
@@ -191,6 +196,8 @@ if __name__ == '__main__':
                     newTweet = get_syllables_per_word(user)
                     # if the tweet is loaded successfully, continue
                     cont = True
+                    # if a tweet is sent, break the loop to save any other tweeks for the next round
+                    break
                 # if an error occurs
                 except tweepy.error.TweepError:
                     print ("sleeping for {} seconds".format(sum(fibo)))
